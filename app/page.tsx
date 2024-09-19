@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 
 const Chat = () => {
-  const [message, setMessage] = useState('');
+  const [messages, setMessage] = useState('');
   const [chatHistory, setChatHistory] = useState<string[]>([]);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -12,7 +12,7 @@ const Chat = () => {
   }, [chatHistory]);
 
   const sendMessage = async () => {
-    if (message.trim() === '') return; // Ignore empty messages
+    if (messages.trim() === '') return;
 
     try {
       const response = await fetch('http://localhost:5000/get', {
@@ -20,7 +20,7 @@ const Chat = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ msg: message }),
+        body: JSON.stringify({ msg: messages }),
       });
 
       if (!response.ok) {
@@ -31,7 +31,7 @@ const Chat = () => {
 
       setChatHistory(prevHistory => [
         ...prevHistory,
-        `User: ${message}`,
+        `User: ${messages}`,
         `Bot: ${data.response}`
       ]);
 
@@ -81,7 +81,7 @@ const Chat = () => {
         <div className="p-4 bg-gradient-to-r from-blue-400 to-purple-500 flex items-center space-x-2">
           <input
             type="text"
-            value={message}
+            value={messages}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Type your message..."
             className="flex-1 bg-white text-gray-800 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none shadow-sm"
