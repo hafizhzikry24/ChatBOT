@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from flask_cors import CORS  # Import CORS
+from flask_cors import CORS  
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 
@@ -7,7 +7,7 @@ tokenizer = AutoTokenizer.from_pretrained("microsoft/DialoGPT-medium")
 model = AutoModelForCausalLM.from_pretrained("microsoft/DialoGPT-medium")
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all domains
+CORS(app)  
 
 @app.route("/")
 def index():
@@ -29,7 +29,7 @@ def chat():
         return jsonify({"error": str(e)}), 500
 
 def get_Chat_response(text):
-    chat_history_ids = torch.tensor([]).long()  # Initialize chat history
+    chat_history_ids = torch.tensor([]).long()  
 
     for step in range(5):
         new_user_input_ids = tokenizer.encode(str(text) + tokenizer.eos_token, return_tensors='pt')
