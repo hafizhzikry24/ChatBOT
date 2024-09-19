@@ -29,13 +29,12 @@ def chat():
         return jsonify({"error": str(e)}), 500
 
 def get_Chat_response(text):
-    chat_history_ids = torch.tensor([]).long()  
-
-    for step in range(5):
-        new_user_input_ids = token.encode(str(text) + token.eos_token, return_tensors='pt')
-        bot_input_ids = torch.cat([chat_history_ids, new_user_input_ids], dim=-1) if chat_history_ids.numel() > 0 else new_user_input_ids
-        chat_history_ids = model.generate(bot_input_ids, max_length=1000, pad_token_id=token.eos_token_id)
-        text = token.decode(chat_history_ids[:, bot_input_ids.shape[-1]:][0], skip_special_tokens=True)
+    # Encode input and prepare chat history (empty for the first time)
+    new_user_input_ids = token.encode(str(text) + token.eos_token, return_tensors='pt')
+    chat_history_ids = model.generate(new_user_input_ids, max_length=1000, pad_token_id=token.eos_token_id)
+    
+    # Decode the generated response
+    text = token.decode(chat_history_ids[:, new_user_input_ids.shape[-1]:][0], skip_special_tokens=True)
     
     return text
 
